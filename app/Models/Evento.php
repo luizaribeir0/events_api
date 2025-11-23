@@ -16,6 +16,8 @@ class Evento extends Model
      */
     protected $fillable = [
         'descricao',
+        'local',
+        'vagas',
         'data_inicio',
         'data_final',
         'cancelado',

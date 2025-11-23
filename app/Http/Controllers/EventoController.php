@@ -80,6 +80,8 @@ class EventoController extends Controller
                 required: ['descricao', 'data_inicio', 'data_final'],
                 properties: [
                     new OA\Property(property: 'descricao', type: 'string', example: 'Workshop de Laravel'),
+                    new OA\Property(property: 'local', type: 'string', example: 'Auditório Principal'),
+                    new OA\Property(property: 'vagas', type: 'integer', example: 50),
                     new OA\Property(property: 'data_inicio', type: 'string', format: 'date-time', example: '2024-12-01 10:00:00'),
                     new OA\Property(property: 'data_final', type: 'string', format: 'date-time', example: '2024-12-01 18:00:00'),
                     new OA\Property(property: 'cancelado', type: 'boolean', example: false)
@@ -128,6 +130,8 @@ class EventoController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'descricao' => 'required|string|max:255',
+                'local' => 'nullable|string|max:255',
+                'vagas' => 'nullable|integer|min:0',
                 'data_inicio' => 'required|date',
                 'data_final' => 'required|date|after:data_inicio',
                 'cancelado' => 'nullable|boolean',
@@ -144,6 +148,8 @@ class EventoController extends Controller
 
             $evento = Evento::create([
                 'descricao' => $request->descricao,
+                'local' => $request->local,
+                'vagas' => $request->vagas ?? 0,
                 'data_inicio' => $request->data_inicio,
                 'data_final' => $request->data_final,
                 'cancelado' => $request->cancelado ?? false,
@@ -265,6 +271,8 @@ class EventoController extends Controller
             content: new OA\JsonContent(
                 properties: [
                     new OA\Property(property: 'descricao', type: 'string', example: 'Workshop de Laravel Atualizado'),
+                    new OA\Property(property: 'local', type: 'string', example: 'Auditório Principal'),
+                    new OA\Property(property: 'vagas', type: 'integer', example: 50),
                     new OA\Property(property: 'data_inicio', type: 'string', format: 'date-time', example: '2024-12-01 10:00:00'),
                     new OA\Property(property: 'data_final', type: 'string', format: 'date-time', example: '2024-12-01 18:00:00'),
                     new OA\Property(property: 'cancelado', type: 'boolean', example: false)
@@ -334,6 +342,8 @@ class EventoController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'descricao' => 'sometimes|required|string|max:255',
+                'local' => 'nullable|string|max:255',
+                'vagas' => 'nullable|integer|min:0',
                 'data_inicio' => 'sometimes|required|date',
                 'data_final' => 'sometimes|required|date|after:data_inicio',
                 'cancelado' => 'nullable|boolean',
@@ -348,7 +358,7 @@ class EventoController extends Controller
                 ], 422);
             }
 
-            $evento->update($request->only(['descricao', 'data_inicio', 'data_final', 'cancelado']));
+            $evento->update($request->only(['descricao', 'local', 'vagas', 'data_inicio', 'data_final', 'cancelado']));
 
             return response()->json([
                 'success' => true,
